@@ -1,5 +1,5 @@
 /**
  * Created by PC on 29/05/2017.
  */
-public class Pawn extends IPawn {
+public class Route extends IRoute {
 }
