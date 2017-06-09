@@ -1,4 +1,4 @@
 package Mazer;
 
-public class Route extends IRoute {
+public class Route implements IRoute {
 }

@@ -1,4 +1,4 @@
 package Mazer;
 
-public class Pawn extends IPawn {
+public class Pawn implements IPawn {
 }
