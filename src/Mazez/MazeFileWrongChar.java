@@ -1,4 +1,4 @@
-package Mazer;
+package Mazez;
 
 public class MazeFileWrongChar extends MazeException {
 

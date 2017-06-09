@@ -1,4 +1,4 @@
-package Mazer;
+package Mazez;
 
 /**
  * Created by PC on 09/06/2017.

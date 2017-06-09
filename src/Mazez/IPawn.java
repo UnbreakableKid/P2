@@ -1,4 +1,4 @@
-package Mazer;
+package Mazez;
 
 public interface IPawn {
     void move(Move m); // changes this pawn position according to move.

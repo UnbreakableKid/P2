@@ -1,17 +1,21 @@
-package Mazer;
+package Mazez;
 
+import java.io.File;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class Maze implements IMaze {
 
+    private File f;
     private MazeCell[][] maze;
     private int numCols;
     private int numRows;
     private Pawn p;
     private Route r;
 
-    //private ArrayList<MazeCell> maze = new ArrayList<MazeCell>();
+    //private ArrayList<Mazez.MazeCell> maze = new ArrayList<Mazez.MazeCell>();
 
    /*
 
@@ -42,9 +46,9 @@ public class Maze implements IMaze {
         p = new Pawn();
 
         //for tests
-        /*MazeCell[][] maze = new MazeCell[][]{{MazeCell.START, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY},
-                {MazeCell.EMPTY, MazeCell.WALL, MazeCell.WALL, MazeCell.WALL, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.WALL, MazeCell.WALL,},
-                {MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EXIT}
+        /*Mazez.MazeCell[][] maze = new Mazez.MazeCell[][]{{Mazez.MazeCell.START, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY},
+                {Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.WALL, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.WALL,},
+                {Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EXIT}
         };
 */
     }
@@ -55,11 +59,25 @@ public class Maze implements IMaze {
         }
     }
 
-    public void openFile(String filename){
+    private void chooseOne(){
+        JButton b = new JButton();
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Maze", "maze");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(b);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +chooser.getSelectedFile().getName());
+            f = chooser.getSelectedFile();
+        }
+    }
+
+
+    public void openFile(){
 
         try
         {
-            FileReader f = new FileReader(filename);
+            chooseOne();
+            FileReader f = new FileReader(this.f);
             BufferedReader reader = new BufferedReader(f);
             MazeCell m;
             int currentC = 0;

@@ -1,4 +1,4 @@
-package Mazer;
+package Mazez;
 
 public interface IMaze {
     boolean canMove(Maze.Pawn p, Move m); // true IFF pawn can do move in this maze.
