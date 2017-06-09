@@ -85,6 +85,7 @@ public class Maze implements IMaze {
             String firstLine = reader.readLine();
             numCols = firstLine.length();
             int c = reader.read();
+            System.out.println(numCols);
             while (c != 0){
                 if(currentC > numCols){
                     throw new MazeFileNumCols(currentC);
@@ -98,6 +99,7 @@ public class Maze implements IMaze {
                 currentC++;
                 c = reader.read();
             }
+            System.out.println("DONE");
             reader.close();
         }
         catch (MazeFileWrongChar e){
