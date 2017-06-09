@@ -1,4 +1,4 @@
-import Mazer.Maze;
+import Mazer.*;
 
 public class Tester{
 
