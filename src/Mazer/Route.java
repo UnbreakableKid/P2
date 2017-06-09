@@ -1,3 +1,5 @@
+package Mazer;
+
 /**
  * Created by PC on 29/05/2017.
  */

@@ -1,3 +1,7 @@
+package Mazer;
+
+import Mazer.Route;
+
 /**
  * Created by falad on 30-May-17.
  */
