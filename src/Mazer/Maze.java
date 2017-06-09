@@ -18,7 +18,6 @@ public class Maze implements IMaze {
     */
 
     public Move[] getOptions(Pawn p) {
-        p = new Pawn();
         Move[] movez = new Move[1];
         return movez;
     }
@@ -35,6 +34,8 @@ public class Maze implements IMaze {
     }
 
     public Maze() {
+
+        p = new Pawn();
 
         //for tests
         MazeCell[][] maze = new MazeCell[][]{{MazeCell.START, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY},
