@@ -11,7 +11,7 @@ public class Maze implements IMaze {
 
    /*
 
-    _SW______\n
+    S_W______\n
     _WWW_W_WW\n
     _____W__E\n
 
@@ -37,7 +37,7 @@ public class Maze implements IMaze {
     public Maze() {
 
         //for tests
-        MazeCell[][] maze = new MazeCell[][]{{MazeCell.EMPTY, MazeCell.START, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY},
+        MazeCell[][] maze = new MazeCell[][]{{MazeCell.START, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY},
                 {MazeCell.EMPTY, MazeCell.WALL, MazeCell.WALL, MazeCell.WALL, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.WALL, MazeCell.WALL,},
                 {MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EXIT}
         };
@@ -62,6 +62,7 @@ public class Maze implements IMaze {
 
     class Route implements IRoute {
 
+        private Move[] route;
         public int getCol(){
             return 1;
         }
@@ -81,5 +82,11 @@ public class Maze implements IMaze {
         public int length(){
             return 5;
         }
+
+        public void move(Move m) {
+
+        }
+
+
     }
 }
