@@ -1,7 +1,11 @@
 package Mazer;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class Maze implements IMaze {
 
+    private MazeCell[][] maze;
     private int numCols;
     private int numRows;
     private Pawn p;
@@ -38,7 +42,6 @@ public class Maze implements IMaze {
         p = new Pawn();
 
         //for tests
-        start();
         MazeCell[][] maze = new MazeCell[][]{{MazeCell.START, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY},
                 {MazeCell.EMPTY, MazeCell.WALL, MazeCell.WALL, MazeCell.WALL, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.WALL, MazeCell.WALL,},
                 {MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.WALL, MazeCell.EMPTY, MazeCell.EMPTY, MazeCell.EXIT}
@@ -46,8 +49,58 @@ public class Maze implements IMaze {
 
     }
 
-    private void start(){
+    public void openFile(String filename){
 
+        try
+        {
+            FileReader f = new FileReader(filename);
+            BufferedReader reader = new BufferedReader(f);
+            MazeCell m;
+            int currentC = 0;
+            int currentR = 0;
+            String firstLine = reader.readLine();
+            numCols = firstLine.length();
+            int c = reader.read();
+            while (c != 0){
+                if(currentC > numCols){
+                    throw new MazeFileNumCols(currentC);
+                }
+                if (c == (int)'\n') {
+                    currentR++;
+                    //muda de linha
+                }
+                m = judge(c, currentC, currentR);
+                addTo(m, currentC, currentR);
+                currentC++;
+                c = reader.read();
+            }
+            reader.close();
+        }
+        catch (MazeFileWrongChar e){
+            System.out.println(e.getMessage());
+        }
+
+        catch (MazeFileNumCols e){
+            System.out.println(e.getMessage());
+        }
+
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void addTo (MazeCell type, int cC, int cR){
+        maze[cC][cR] = type;
+    }
+
+    private MazeCell judge (int asci, int cC, int cR ) throws MazeFileWrongChar{
+        switch (asci) {
+            case 83: return MazeCell.START; // S
+            case 95: return MazeCell.EMPTY; //_
+            case 69: return MazeCell.EXIT; //E
+            case 87: return MazeCell.WALL; //W
+            default:throw new MazeFileWrongChar(cC, cR);
+        }
     }
 
     class Pawn implements IPawn {
