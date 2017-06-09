@@ -1,8 +1,5 @@
 package Mazer;
 
-/**
- * Created by falad on 30-May-17.
- */
 public interface IRoute {
     int getCol(); // returns the column of the current position.
     int getRow(); // returns the row of the current position.

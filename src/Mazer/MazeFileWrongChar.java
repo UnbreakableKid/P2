@@ -1,8 +1,5 @@
 package Mazer;
 
-/**
- * Created by PC on 09/06/2017.
- */
 public class MazeFileWrongChar extends MazeException {
 
     private int rown;
