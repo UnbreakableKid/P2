@@ -13,16 +13,6 @@ public class Maze implements IMaze {
     private Pawn p;
     private Route r;
 
-    //private ArrayList<Mazez.MazeCell> maze = new ArrayList<Mazez.MazeCell>();
-
-   /*
-
-    S_W______\n
-    _WWW_W_WW\n
-    _____W__E\n
-
-    */
-
     public Move[] getOptions(Pawn p) {
         Move[] movez = new Move[1];
         return movez;
@@ -33,6 +23,7 @@ public class Maze implements IMaze {
     }
 
     public void move(Pawn p, Move m) {
+
     }
 
     public boolean canMove(Pawn p, Move m) {
@@ -43,37 +34,30 @@ public class Maze implements IMaze {
 
         p = new Pawn();
 
-        //for tests
-        /*Mazez.MazeCell[][] maze = new Mazez.MazeCell[][]{{Mazez.MazeCell.START, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY},
-                {Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.WALL, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.WALL,},
-                {Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.WALL, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EMPTY, Mazez.MazeCell.EXIT}
-        };
-*/
     }
 
-    public void iWonder (){
-        for (MazeCell m : maze[1]){
+    public void iWonder() {
+        for (MazeCell m : maze[1]) {
             System.out.print(m);
         }
     }
 
-    private void chooseOne(){
+    private void chooseOne() {
         JButton b = new JButton();
         JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Maze", "maze");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Maze file", "maze");
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(b);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " +chooser.getSelectedFile().getName());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
             f = chooser.getSelectedFile();
         }
     }
 
 
-    public void openFile(){
+    public void openFile() {
 
-        try
-        {
+        try {
             //chooseOne();
             FileInputStream fis = new FileInputStream(this.f);
             InputStreamReader isr = new InputStreamReader(fis);
@@ -81,9 +65,9 @@ public class Maze implements IMaze {
             String firstLine = reader.readLine();
             numCols = firstLine.length();
             int i = 1;
-            while (firstLine != null){
+            while (firstLine != null) {
 
-                if(firstLine.length() != numCols){
+                if (firstLine.length() != numCols) {
                     throw new MazeFileNumCols(i);
                 }
                 firstLine = reader.readLine();
@@ -99,77 +83,97 @@ public class Maze implements IMaze {
             int fsize = (int) f.length();
             byte[] stuff = new byte[fsize];
             fis2.read(stuff);
+            judge(stuff);
 
 
-        }
-        //catch (MazeFileWrongChar e){
-          //  System.out.println(e.getMessage());
-        //}
-
-        catch (MazeFileNumCols e){
+        } catch (MazeFileWrongChar e) {
             System.out.println(e.getMessage());
-        }
-
-        catch (Exception e){
+        } catch (MazeFileNumCols e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private void addTo (MazeCell type, int cC, int cR){
-        maze[cC][cR] = type;
+    private void addTo(MazeCell type, int cC, int cR) {
+        //maze[cC][cR] = type;
+        System.out.print(1);
     }
 
-    private MazeCell judge (int asci, int cC, int cR ) throws MazeFileWrongChar{
-        switch (asci) {
-            case 83: return MazeCell.START; // S
-            case 95: return MazeCell.EMPTY; //_
-            case 69: return MazeCell.EXIT; //E
-            case 87: return MazeCell.WALL; //W
-            default:throw new MazeFileWrongChar(cC, cR);
-        }
-    }
+    private void judge(byte[] file) throws MazeFileWrongChar {
+        int cC = 0, cR = 0;
+        int a;
+        for (byte b : file) {
+            a = (int) b;
+            System.out.println(a);
 
-    class Pawn implements IPawn {
+            if (isValid(a)){
 
-        public void move(Move m){
-            if (canMove(p, Move.EAST)){
-                //move
+                if (a == 95){
+                    addTo(MazeCell.EMPTY, cC, cR); // _
+                    cC++;
+                }
+                if (a == 87){
+                    addTo(MazeCell.WALL, cC, cR); // W
+                    cC++;
+                }
+                if (a == 83){
+                    addTo(MazeCell.START, cC, cR); // S
+                    cC++;
+                }
+                if (a == 69){
+                    addTo(MazeCell.EXIT, cC, cR); // E
+                    cC++;
+                }
+                if (a == 10){
+                    cR++;
+                }
             }
-            else{
-                //no move :D
+            else {
+                //throw new MazeFileWrongChar(cC, cR);
             }
         }
+     }
 
-        public Route getRoute(){
-            return r;
-        }
+    private boolean isValid(int ascii){
+        if (ascii == 95 | ascii == 83 | ascii == 87 | ascii == 13 | ascii == 10)
+            return true;
+        else
+            return false;
+    }
+}
+
+class Pawn implements IPawn {
+    public void move(Move m) {
     }
 
-    class Route implements IRoute {
+    public Route getRoute() {return new Route();}
+}
 
-        private Move[] route;
-        public int getCol(){
-            return 1;
-        }
+class Route implements IRoute {
 
-        public int getRow(){
-            return 2;
-        }
+    private Move[] route;
 
-        public int getCol(int i){
-            return 3;
-        }
+    public int getCol() {
+        return 1;
+    }
 
-        public int getRow(int i){
-            return 4;
-        }
+    public int getRow() {
+        return 2;
+    }
 
-        public int length(){
-            return 5;
-        }
+    public int getCol(int i) {
+        return 3;
+    }
 
-        public void move(Move m) {
+    public int getRow(int i) {
+        return 4;
+    }
 
-        }
+    public int length() {
+        return 5;
+    }
+
+    public void move(Move m) {
     }
 }

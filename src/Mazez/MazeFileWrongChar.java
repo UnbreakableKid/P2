@@ -10,7 +10,7 @@ public class MazeFileWrongChar extends MazeException {
         return message;
     }
 
-    public MazeFileWrongChar(int row, int col){
+    public MazeFileWrongChar(int col, int row){
         this.rown = row;
         this.coln = col;
     }
