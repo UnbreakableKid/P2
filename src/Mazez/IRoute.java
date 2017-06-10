@@ -1,4 +1,4 @@
-package Mazer;
+package Mazez;
 
 public interface IRoute {
     int getCol(); // returns the column of the current position.
