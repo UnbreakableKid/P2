@@ -1,14 +1,12 @@
 package Mazez;
 
-import java.io.File;
+import java.io.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class Maze implements IMaze {
 
-    private File f;
+    private File f = new File("E:/PC/New/P2/src/d.maze");
     private MazeCell[][] maze;
     private int numCols;
     private int numRows;
@@ -76,35 +74,37 @@ public class Maze implements IMaze {
 
         try
         {
-            chooseOne();
-            FileReader f = new FileReader(this.f);
-            BufferedReader reader = new BufferedReader(f);
-            MazeCell m;
-            int currentC = 0;
-            int currentR = 0;
+            //chooseOne();
+            FileInputStream fis = new FileInputStream(this.f);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
             String firstLine = reader.readLine();
             numCols = firstLine.length();
-            int c = reader.read();
-            System.out.println(numCols);
-            while (c != 0){
-                if(currentC > numCols){
-                    throw new MazeFileNumCols(currentC);
+            int i = 1;
+            while (firstLine != null){
+
+                if(firstLine.length() != numCols){
+                    throw new MazeFileNumCols(i);
                 }
-                if (c == (int)'\n') {
-                    currentR++;
-                    //muda de linha
-                }
-                m = judge(c, currentC, currentR);
-                addTo(m, currentC, currentR);
-                currentC++;
-                c = reader.read();
+                firstLine = reader.readLine();
+                i++;
             }
-            System.out.println("DONE");
+
             reader.close();
+            isr.close();
+            fis.close();
+
+            FileInputStream fis2 = new FileInputStream(this.f);
+
+            int fsize = (int) f.length();
+            byte[] stuff = new byte[fsize];
+            fis2.read(stuff);
+
+
         }
-        catch (MazeFileWrongChar e){
-            System.out.println(e.getMessage());
-        }
+        //catch (MazeFileWrongChar e){
+          //  System.out.println(e.getMessage());
+        //}
 
         catch (MazeFileNumCols e){
             System.out.println(e.getMessage());
