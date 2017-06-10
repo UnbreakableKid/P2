@@ -1,8 +1,5 @@
 package Mazez;
 
-/**
- * Created by PC on 09/06/2017.
- */
 public class MazeFileNumCols extends MazeException {
 
     private int coln;

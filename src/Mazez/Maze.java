@@ -6,6 +6,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Maze implements IMaze {
 
+    private final int ERROR = -1;
     private File f = new File("E:/PC/New/P2/src/d.maze");
     private MazeCell[][] maze;
     private int numCols;
@@ -32,7 +33,7 @@ public class Maze implements IMaze {
 
     public Maze() {
 
-        p = new Pawn();
+        this.p = new Pawn();
 
     }
 
@@ -64,16 +65,19 @@ public class Maze implements IMaze {
             BufferedReader reader = new BufferedReader(isr);
             String firstLine = reader.readLine();
             numCols = firstLine.length();
+            numRows = 0;
             int i = 1;
             while (firstLine != null) {
-
+                numRows++;
                 if (firstLine.length() != numCols) {
+                    numCols = ERROR;
+                    numRows = ERROR;
                     throw new MazeFileNumCols(i);
                 }
                 firstLine = reader.readLine();
                 i++;
             }
-
+            maze = new MazeCell[numRows][numCols];
             reader.close();
             isr.close();
             fis.close();
@@ -91,13 +95,12 @@ public class Maze implements IMaze {
         } catch (MazeFileNumCols e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.print(e.toString());
         }
     }
 
-    private void addTo(MazeCell type, int cC, int cR) {
-        //maze[cC][cR] = type;
-        System.out.print(1);
+    private void addTo(MazeCell type, int cR, int cC) {
+        this.maze[cR][cC] = type;
     }
 
     private void judge(byte[] file) throws MazeFileWrongChar {
@@ -110,33 +113,34 @@ public class Maze implements IMaze {
             if (isValid(a)){
 
                 if (a == 95){
-                    addTo(MazeCell.EMPTY, cC, cR); // _
+                    addTo(MazeCell.EMPTY, cR, cC); // _
                     cC++;
                 }
                 if (a == 87){
-                    addTo(MazeCell.WALL, cC, cR); // W
+                    addTo(MazeCell.WALL, cR, cC); // W
                     cC++;
                 }
                 if (a == 83){
-                    addTo(MazeCell.START, cC, cR); // S
+                    addTo(MazeCell.START, cR, cC); // S
                     cC++;
                 }
                 if (a == 69){
-                    addTo(MazeCell.EXIT, cC, cR); // E
+                    addTo(MazeCell.EXIT, cR, cC); // E
                     cC++;
                 }
                 if (a == 10){
+                    cC = 0;
                     cR++;
                 }
             }
-            else {
-                //throw new MazeFileWrongChar(cC, cR);
+            if (!isValid(a)) {
+                throw new MazeFileWrongChar(cC, cR);
             }
         }
      }
 
     private boolean isValid(int ascii){
-        if (ascii == 95 | ascii == 83 | ascii == 87 | ascii == 13 | ascii == 10)
+        if (ascii == 95 | ascii == 83 | ascii == 87 | ascii == 13 | ascii == 10 | ascii == 69)
             return true;
         else
             return false;
