@@ -9,9 +9,8 @@ public class Maze implements IMaze {
     private final int ERROR = -1;
     private File f = new File("E:/PC/New/P2/src/d.maze");
     private MazeCell[][] maze;
-    private int numCols;
-    private int numRows;
-    private Pawn p;
+    private int numColS, numRowS , numCols, numRows, numColE, numRowE;
+    public Pawn p;
     private Route r;
 
     public Move[] getOptions(Pawn p) {
@@ -20,7 +19,8 @@ public class Maze implements IMaze {
     }
 
     public boolean isSolvedBy(Pawn p) {
-        return true;
+        int[] a = p.position();
+        return a[0] == numColE & a[1] == numRowE;
     }
 
     public void move(Pawn p, Move m) {
@@ -32,15 +32,14 @@ public class Maze implements IMaze {
     }
 
     public Maze() {
-
-        this.p = new Pawn();
-
     }
 
-    public void iWonder() {
-        for (MazeCell m : maze[1]) {
-            System.out.print(m);
-        }
+    public void start(){
+
+        openFile();
+        p = new Pawn(numColE, numRowE);
+
+
     }
 
     private void chooseOne() {
@@ -56,7 +55,7 @@ public class Maze implements IMaze {
     }
 
 
-    public void openFile() {
+    private void openFile() {
 
         try {
             //chooseOne();
@@ -89,7 +88,6 @@ public class Maze implements IMaze {
             fis2.read(stuff);
             judge(stuff);
 
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -104,32 +102,32 @@ public class Maze implements IMaze {
         int a;
         for (byte b : file) {
             a = (int) b;
-            System.out.println(a);
-
             if (isValid(a)){
-
                 if (a == 95){
                     addTo(MazeCell.EMPTY, cR, cC); // _
                     cC++;
-                }
-                if (a == 87){
+                }if (a == 87){
                     addTo(MazeCell.WALL, cR, cC); // W
                     cC++;
-                }
-                if (a == 83){
+                }if (a == 83){
                     addTo(MazeCell.START, cR, cC); // S
+
+                    numColS = cC;
+                    numRowS = cR;
+
                     cC++;
-                }
-                if (a == 69){
+                }if (a == 69){
                     addTo(MazeCell.EXIT, cR, cC); // E
                     cC++;
-                }
-                if (a == 10){
+
+                    numColE = cC;
+                    numRowE = cR;
+
+                }if (a == 10){
                     cC = 0;
                     cR++;
                 }
-            }
-            if (!isValid(a)) {
+            }if (!isValid(a)) {
                 throw new MazeFileWrongChar(cC, cR);
             }
         }
@@ -138,39 +136,56 @@ public class Maze implements IMaze {
     private boolean isValid(int ascii){
         return ascii == 95 | ascii == 83 | ascii == 87 | ascii == 13 | ascii == 10 | ascii == 69;
     }
+
+
+    public class Pawn implements IPawn {
+
+        int currentColl, currentRow;
+
+        private int[] position (){
+            int[] a = new int[2];
+            a[0]=currentColl;
+            a[1]=currentRow;
+            return a;
+        }
+
+        public Pawn(int collS, int rowS){
+            this.currentColl = collS;
+            this.currentRow = rowS;
+        }
+
+        public void move(Move m) {
+        }
+
+        public Route getRoute() {return new Route();}
+    }
+
+    public class Route implements IRoute {
+
+        private Move[] route;
+
+        public int getCol() {
+            return 1;
+        }
+
+        public int getRow() {
+            return 2;
+        }
+
+        public int getCol(int i) {
+            return 3;
+        }
+
+        public int getRow(int i) {
+            return 4;
+        }
+
+        public int length() {
+            return 5;
+        }
+
+        public void move(Move m) {
+        }
+    }
 }
 
-class Pawn implements IPawn {
-    public void move(Move m) {
-    }
-
-    public Route getRoute() {return new Route();}
-}
-
-class Route implements IRoute {
-
-    private Move[] route;
-
-    public int getCol() {
-        return 1;
-    }
-
-    public int getRow() {
-        return 2;
-    }
-
-    public int getCol(int i) {
-        return 3;
-    }
-
-    public int getRow(int i) {
-        return 4;
-    }
-
-    public int length() {
-        return 5;
-    }
-
-    public void move(Move m) {
-    }
-}
