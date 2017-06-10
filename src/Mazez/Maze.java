@@ -90,12 +90,8 @@ public class Maze implements IMaze {
             judge(stuff);
 
 
-        } catch (MazeFileWrongChar e) {
-            System.out.println(e.getMessage());
-        } catch (MazeFileNumCols e) {
-            System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.print(e.toString());
+            System.out.println(e.getMessage());
         }
     }
 
@@ -140,10 +136,7 @@ public class Maze implements IMaze {
      }
 
     private boolean isValid(int ascii){
-        if (ascii == 95 | ascii == 83 | ascii == 87 | ascii == 13 | ascii == 10 | ascii == 69)
-            return true;
-        else
-            return false;
+        return ascii == 95 | ascii == 83 | ascii == 87 | ascii == 13 | ascii == 10 | ascii == 69;
     }
 }
 
