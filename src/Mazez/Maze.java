@@ -6,15 +6,18 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Maze implements IMaze {
 
+    public Maze() {
+    }
+
     private final int ERROR = -1;
     private File f = new File("E:/PC/New/P2/src/d.maze");
     private MazeCell[][] maze;
     private int numColS, numRowS, numCols, numRows, numColE, numRowE;
 
-    static final int[] north = new int[]{-1, 0};
-    static final int[] south = new int[]{1, 0};
-    static final int[] west = new int[]{0, -1};
-    static final int[] east = new int[]{0, 1};
+    private static final int[] north = new int[]{-1, 0};
+    private static final int[] south = new int[]{1, 0};
+    private static final int[] west = new int[]{0, -1};
+    private static final int[] east = new int[]{0, 1};
 
     public Move[] getOptions(Pawn p) {
         return new Move[1];
@@ -30,19 +33,51 @@ public class Maze implements IMaze {
     }
 
     public void move(Pawn p, Move m) {
-        canMove(p, m);
+        if(canMove(p, m)){
+            p.move(m);
+        }
+        else {
+            //no move
+        }
+    }
+
+    static int[] identifyM (Move m){
+        switch (m){
+            case NORTH:
+                return north;
+            case SOUTH:
+                return south;
+            case WEST:
+                return west;
+            case EAST:
+                return east;
+            case NOOP:
+        }
+        return new int[]{0,0};
     }
 
     public boolean canMove(Pawn p, Move m){
+        int [] pos = p.position();
+        int [] posToBe = Pawn.addMatrizes(identifyM(m), pos);
         try {
-            p.move(m);
-        }catch (Exception e){
-            System.out.print(e.getMessage());
+            return(canIgo(maze[posToBe[0]][posToBe[1]]));
+        }catch (ArrayIndexOutOfBoundsException e){
+            return false;
         }
-        return true;
     }
 
-    public Maze() {
+    private boolean canIgo(MazeCell mc) {
+        switch (mc){
+            case EXIT:
+                return true;
+            case WALL:
+                return false;
+            case EMPTY:
+                return true;
+            case START:
+                return true;
+        }
+        return false;
     }
 
     public void start() {
