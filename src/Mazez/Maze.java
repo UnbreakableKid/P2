@@ -20,7 +20,18 @@ public class Maze implements IMaze {
     private static final int[] east = new int[]{0, 1};
 
     public Move[] getOptions(Pawn p) {
-        return new Move[1];
+        Move[] mov;
+        int i = 0;
+        for (Move move : Move.values()){
+            if (canMove(p, move))
+                i++;
+        }
+        mov = new Move[i];
+        for (Move move : Move.values()){
+            if (canMove(p, move))
+                mov[i]=move;
+        }
+        return mov;
     }
 
     int[] getStartP(){
@@ -100,7 +111,6 @@ public class Maze implements IMaze {
             f = chooser.getSelectedFile();
         }
     }
-
 
     private void openFile() {
 
