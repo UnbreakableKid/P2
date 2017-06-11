@@ -1,2 +1,3 @@
 package Mazez;
-public enum Move {NORT, EAST, SOUTH, WEST, NOOP};
+public enum Move {
+    NORTH, EAST, SOUTH, WEST, NOOP};
