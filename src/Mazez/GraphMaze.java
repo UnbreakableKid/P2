@@ -9,7 +9,7 @@ public class GraphMaze extends JFrame{
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
 
-    public GraphMaze(){
+    public GraphMaze(Maze m){
 
         setVisible(true);
         setTitle("Playing maze...");
@@ -17,5 +17,7 @@ public class GraphMaze extends JFrame{
         setResizable(false);
         setLocation(X_TO_ORIGIN, Y_TO_ORIGIN);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        GraphPawn gp = new GraphPawn(m.p);
+
     }
 }

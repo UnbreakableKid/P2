@@ -1,17 +1,22 @@
 package Mazez;
 
 import java.io.*;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 public class Maze implements IMaze {
 
-    public Maze() {
-        p = new Pawn(numColS, numRowS);
-    }
+    public Maze(File f) throws Exception {
+
+        if (goodCols(f)) {
+            if (goodtoRead(f)) {
+                read();
+                }
+            }
+        }
 
     private final int ERROR = -1;
-    private File f = new File("E:/PC/New/P2/src/d.maze");
+    private byte[] stuff;
+
     private MazeCell[][] maze;
     private int numColS, numRowS, numCols, numRows, numColE, numRowE;
 
@@ -25,20 +30,20 @@ public class Maze implements IMaze {
     public Move[] getOptions(Pawn p) {
         Move[] mov;
         int i = 0;
-        for (Move move : Move.values()){
+        for (Move move : Move.values()) {
             if (canMove(p, move))
                 i++;
         }
         mov = new Move[i];
-        for (Move move : Move.values()){
+        for (Move move : Move.values()) {
             if (canMove(p, move))
-                mov[i]=move;
+                mov[i] = move;
         }
         return mov;
     }
 
-    static int[] identifyM (Move m){
-        switch (m){
+    static int[] identifyM(Move m) {
+        switch (m) {
             case NORTH:
                 return north;
             case SOUTH:
@@ -49,19 +54,19 @@ public class Maze implements IMaze {
                 return east;
             case NOOP:
         }
-        return new int[]{0,0};
+        return new int[]{0, 0};
     }
 
-    static int[] addMatrizes (int[] a, int[] b){
+    static int[] addMatrizes(int[] a, int[] b) {
         int c[] = new int[a.length];
 
-        for (int i=0; i< a.length; i++){
-            c[i]=a[i]+b[i];
+        for (int i = 0; i < a.length; i++) {
+            c[i] = a[i] + b[i];
         }
         return c;
     }
 
-    int[] getStartP(){
+    int[] getStartP() {
         return new int[]{numRowS, numColS};
     }
 
@@ -71,26 +76,25 @@ public class Maze implements IMaze {
     }
 
     public void move(Pawn p, Move m) {
-        if(canMove(p, m)){
+        if (canMove(p, m)) {
             p.move(m);
-        }
-        else {
+        } else {
             //no move
         }
     }
 
-    public boolean canMove(Pawn p, Move m){
-        int [] pos = p.position();
-        int [] posToBe = addMatrizes(identifyM(m), pos);
+    public boolean canMove(Pawn p, Move m) {
+        int[] pos = p.position();
+        int[] posToBe = addMatrizes(identifyM(m), pos);
         try {
-            return(canIgo(maze[posToBe[0]][posToBe[1]]));
-        }catch (ArrayIndexOutOfBoundsException e){
+            return (canIgo(maze[posToBe[0]][posToBe[1]]));
+        } catch (ArrayIndexOutOfBoundsException e) {
             return false;
         }
     }
 
     private boolean canIgo(MazeCell mc) {
-        switch (mc){
+        switch (mc) {
             case EXIT:
                 return true;
             case WALL:
@@ -103,107 +107,114 @@ public class Maze implements IMaze {
         return false;
     }
 
-    public void start() {
-        openFile();
-        GraphPawn gPawn = new GraphPawn(p);
-    }
 
     /*for opening and doing maze
 
 
      */
 
-    private void chooseOne() {
-        JButton b = new JButton();
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Maze file", "maze");
-        chooser.setFileFilter(filter);
-        int returnVal = chooser.showOpenDialog(b);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-            f = chooser.getSelectedFile();
+
+    boolean goodCols(File f) throws Exception {
+
+        FileInputStream fis = new FileInputStream(f);
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader reader = new BufferedReader(isr);
+        String firstLine = reader.readLine();
+        numCols = firstLine.length();
+        numRows = 0;
+        int i = 1;
+        while (firstLine != null) {
+            numRows++;
+            if (firstLine.length() != numCols) {
+                numCols = ERROR;
+                numRows = ERROR;
+                throw new MazeFileNumCols(i);
+            }
+            firstLine = reader.readLine();
+            i++;
         }
+        reader.close();
+        isr.close();
+        fis.close();
+        return true;
     }
 
-    private void openFile() {
+    boolean goodtoRead(File f) throws Exception {
 
-        try {
-            //chooseOne();
-            FileInputStream fis = new FileInputStream(this.f);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader reader = new BufferedReader(isr);
-            String firstLine = reader.readLine();
-            numCols = firstLine.length();
-            numRows = 0;
-            int i = 1;
-            while (firstLine != null) {
-                numRows++;
-                if (firstLine.length() != numCols) {
-                    numCols = ERROR;
-                    numRows = ERROR;
-                    throw new MazeFileNumCols(i);
-                }
-                firstLine = reader.readLine();
-                i++;
+        FileInputStream fis = new FileInputStream(f);
+        int filesize = (int) f.length();
+        this.stuff = new byte[filesize];
+        fis.read(stuff);
+        int a, cC = 0, cR = 0;
+
+        for (byte b : stuff) {
+            a = (int) b;
+
+            if (!isValid(a)) {
+                invalidChar(cR, cC);
             }
-            maze = new MazeCell[numRows][numCols];
-            reader.close();
-            isr.close();
-            fis.close();
 
-            FileInputStream fis2 = new FileInputStream(this.f);
+            cC++;
 
-            int fsize = (int) f.length();
-            byte[] stuff = new byte[fsize];
-            fis2.read(stuff);
-            judge(stuff);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            if (a == 10) {
+                cC = 0;
+                cR++;
+            }
         }
+        fis.close();
+        return true;
+    }
+
+    MazeCell[][] getMaze() {
+        return this.maze;
+    }
+
+
+
+    private void invalidChar(int cR, int cC) throws MazeFileWrongChar {
+        throw new MazeFileWrongChar(cR, cC);
     }
 
     private void addTo(MazeCell type, int cR, int cC) {
         this.maze[cR][cC] = type;
     }
 
-    private void judge(byte[] file) throws MazeFileWrongChar {
+    private void read() {
+        maze = new MazeCell[numRows][numCols];
         int cC = 0, cR = 0;
         int a;
-        for (byte b : file) {
+        for (byte b : this.stuff) {
             a = (int) b;
-            if (isValid(a)) {
-                if (a == 95) {
+            switch (a) {
+                case 95:
                     addTo(MazeCell.EMPTY, cR, cC); // _
                     cC++;
-                }
-                if (a == 87) {
+                    break;
+
+                case 85:
                     addTo(MazeCell.WALL, cR, cC); // W
                     cC++;
-                }
-                if (a == 83) {
-                    addTo(MazeCell.START, cR, cC); // S
+                    break;
+                case 83:
 
+                    addTo(MazeCell.START, cR, cC); // S
                     numColS = cC;
                     numRowS = cR;
-
                     cC++;
-                }
-                if (a == 69) {
+                    break;
+
+                case 69:
+
                     addTo(MazeCell.EXIT, cR, cC); // E
                     cC++;
-
                     numColE = cC;
                     numRowE = cR;
+                    break;
 
-                }
-                if (a == 10) {
+                case 10:
                     cC = 0;
                     cR++;
-                }
-            }
-            if (!isValid(a)) {
-                throw new MazeFileWrongChar(cC, cR);
+                    break;
             }
         }
     }

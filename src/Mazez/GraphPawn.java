@@ -5,8 +5,8 @@ import javax.swing.*;
 
 public class GraphPawn extends JPanel {
 
-    private final Color PAWN = new Color(105,105,105);
-    private final int pawnW = 1, pawnH = 1;
+    private final Color PAWN = new Color(055,055,055);
+    private final int pawnW = 5, pawnH = 5;
 
     public GraphPawn(Pawn p){
         this.setBackground(PAWN);
