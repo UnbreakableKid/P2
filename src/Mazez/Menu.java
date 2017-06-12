@@ -17,6 +17,10 @@ public class Menu extends JFrame{
     private final int WIDTH = 800;
     private final int HEIGHT = 600;
 
+    public static void main(String[] args){
+        Menu m = new Menu();
+    }
+
     public Menu(){
 
         setTitle("Mazes");
@@ -48,6 +52,12 @@ public class Menu extends JFrame{
     class PlayButton implements ActionListener {
 
         public void actionPerformed (ActionEvent evt){
+
+            JButton clickedButton = (JButton) evt.getSource();
+            JRootPane rootPane = clickedButton.getRootPane();
+            Frame frame = (JFrame) rootPane.getParent();
+            frame.setVisible(false);
+            GraphMaze playmaze = new GraphMaze();
 
         }
     }
