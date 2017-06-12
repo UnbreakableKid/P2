@@ -10,6 +10,7 @@ public class Maze implements IMaze {
         if (goodCols(f)) {
             if (goodtoRead(f)) {
                 read();
+                p = new Pawn(numRowS, numColS);
                 }
             }
         }
@@ -169,7 +170,9 @@ public class Maze implements IMaze {
         return this.maze;
     }
 
-
+    int[] getDims (){
+        return new int[]{numRows, numCols};
+    }
 
     private void invalidChar(int cR, int cC) throws MazeFileWrongChar {
         throw new MazeFileWrongChar(cR, cC);
@@ -181,9 +184,13 @@ public class Maze implements IMaze {
 
     private void read() {
         maze = new MazeCell[numRows][numCols];
+        //System.out.println(numRows);
+        //System.out.println(numCols);
         int cC = 0, cR = 0;
         int a;
         for (byte b : this.stuff) {
+            System.out.println(cR);
+            System.out.println(cC);
             a = (int) b;
             switch (a) {
                 case 95:
@@ -191,29 +198,27 @@ public class Maze implements IMaze {
                     cC++;
                     break;
 
-                case 85:
+                case 87:
                     addTo(MazeCell.WALL, cR, cC); // W
                     cC++;
                     break;
-                case 83:
 
+                case 83:
                     addTo(MazeCell.START, cR, cC); // S
+                    cC++;
                     numColS = cC;
                     numRowS = cR;
-                    cC++;
                     break;
 
                 case 69:
-
                     addTo(MazeCell.EXIT, cR, cC); // E
                     cC++;
                     numColE = cC;
                     numRowE = cR;
                     break;
-
                 case 10:
-                    cC = 0;
                     cR++;
+                    cC = 0;
                     break;
             }
         }

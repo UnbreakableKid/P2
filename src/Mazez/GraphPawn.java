@@ -5,14 +5,14 @@ import javax.swing.*;
 
 public class GraphPawn extends JPanel {
 
-    private final Color PAWN = new Color(055,055,055);
-    private final int pawnW = 5, pawnH = 5;
+    private final Color PAWN = new Color(255,0,0);
 
     public GraphPawn(Pawn p){
-        this.setBackground(PAWN);
-        this.setSize(pawnW,pawnH);
-        int[] pos = p.position();
-        this.setLocation(pos[0], pos[1]);
+        setBackground(PAWN);
+        setSize(GraphMaze.SQUARE_SIZE, GraphMaze.SQUARE_SIZE);
+        int[] a = p.position();
+        System.out.println(a[0]);
+        System.out.println(a[1]);
+        setLocation(GraphMaze.BORDER + GraphMaze.SQUARE_SIZE * a[1], GraphMaze.BORDER + GraphMaze.SQUARE_SIZE * a[0]);
     }
-
 }

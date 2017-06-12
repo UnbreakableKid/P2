@@ -9,7 +9,7 @@ import java.io.File;
 
 public class Menu extends JFrame{
 
-    private JButton play, choosefile;
+    private JButton play;
     private Maze m;
 
     private final int EACHW = 150;
@@ -41,7 +41,7 @@ public class Menu extends JFrame{
         contentPane.setLayout(null);
         contentPane.add(play);
 
-        PlayButton toplay = new PlayButton( );
+        PlayButton toplay = new PlayButton();
 
         play.addActionListener(toplay);
 
@@ -61,15 +61,14 @@ public class Menu extends JFrame{
 
             try {
                 m = new Maze(f);
-                //GraphMaze playmaze = new GraphMaze(m);
+                GraphMaze playmaze = new GraphMaze(m);
             }catch (Exception e){
                 frame.setVisible(true);
-                JOptionPane.showMessageDialog(null, e.getMessage());
+                JOptionPane.showMessageDialog(null, e.getStackTrace());
             }
 
         }
         private void chooseOne() {
-
             JButton b = new JButton();
             JFileChooser chooser = new JFileChooser();
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Maze file", "maze");

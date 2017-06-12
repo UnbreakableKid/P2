@@ -4,8 +4,8 @@ public class Pawn implements IPawn {
 
     private int currentColl, currentRow;
 
-    public Pawn (int col, int row) {
-        setPosition(new int[]{col, row});
+    public Pawn (int row, int col) {
+        setPosition(new int[]{row, col});
     }
 
     public Pawn(Maze m){
