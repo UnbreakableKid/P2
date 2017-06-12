@@ -7,6 +7,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class Maze implements IMaze {
 
     public Maze() {
+        p = new Pawn(numColS, numRowS);
     }
 
     private final int ERROR = -1;
@@ -18,6 +19,8 @@ public class Maze implements IMaze {
     private static final int[] south = new int[]{1, 0};
     private static final int[] west = new int[]{0, -1};
     private static final int[] east = new int[]{0, 1};
+
+    Pawn p;
 
     public Move[] getOptions(Pawn p) {
         Move[] mov;
@@ -32,6 +35,30 @@ public class Maze implements IMaze {
                 mov[i]=move;
         }
         return mov;
+    }
+
+    static int[] identifyM (Move m){
+        switch (m){
+            case NORTH:
+                return north;
+            case SOUTH:
+                return south;
+            case WEST:
+                return west;
+            case EAST:
+                return east;
+            case NOOP:
+        }
+        return new int[]{0,0};
+    }
+
+    static int[] addMatrizes (int[] a, int[] b){
+        int c[] = new int[a.length];
+
+        for (int i=0; i< a.length; i++){
+            c[i]=a[i]+b[i];
+        }
+        return c;
     }
 
     int[] getStartP(){
@@ -52,24 +79,9 @@ public class Maze implements IMaze {
         }
     }
 
-    static int[] identifyM (Move m){
-        switch (m){
-            case NORTH:
-                return north;
-            case SOUTH:
-                return south;
-            case WEST:
-                return west;
-            case EAST:
-                return east;
-            case NOOP:
-        }
-        return new int[]{0,0};
-    }
-
     public boolean canMove(Pawn p, Move m){
         int [] pos = p.position();
-        int [] posToBe = Pawn.addMatrizes(identifyM(m), pos);
+        int [] posToBe = addMatrizes(identifyM(m), pos);
         try {
             return(canIgo(maze[posToBe[0]][posToBe[1]]));
         }catch (ArrayIndexOutOfBoundsException e){
@@ -93,6 +105,7 @@ public class Maze implements IMaze {
 
     public void start() {
         openFile();
+        GraphPawn gPawn = new GraphPawn(p);
     }
 
     /*for opening and doing maze
