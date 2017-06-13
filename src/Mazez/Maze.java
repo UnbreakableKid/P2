@@ -66,51 +66,56 @@ public class Maze implements IMaze {
 
     public void Solve(){
         Pawn p = new Pawn(this);
-        Solve(0,0, p);
+        Solve(Move.EAST, p);
     }
 
-    private boolean Solve(int row, int col, Pawn p) {
+    private boolean Solve(Move m, Pawn p) {
 
-        System.out.println(p.position()[0]);
-        System.out.println(p.position()[1]);
+        System.out.print(p.position()[0] + " ");
+        System.out.print(p.position()[1]);
+        System.out.println();
 
         if (isSolvedBy(p)){
             return true;
         }
 
         if (canMove(p, Move.SOUTH)){
-            p.move(Move.SOUTH);
-            if(Solve (Move.SOUTH, p)){
+            move(p, Move.SOUTH);
+            if(Solve(Move.SOUTH, p)){
                 return true;
             }
-            p.move(Move.NORTH);
+            //p.move(Move.NORTH);
         }
 
         if (canMove(p, Move.EAST)){
-            p.move(Move.EAST);
-            if(Solve (Move.EAST, p)){
+            move(p, Move.EAST);
+            if(Solve(Move.EAST, p)){
                 return true;
             }
-            p.move(Move.WEST);
+            //p.move(Move.WEST);
         }
 
         if (canMove(p, Move.NORTH)){
-            p.move(Move.NORTH);
-            if(Solve (Move.NORTH, p)){
+            move(p, Move.NORTH);
+            if(Solve(Move.NORTH, p)){
                 return true;
             }
-            p.move(Move.SOUTH);
+            //p.move(Move.SOUTH);
         }
 
         if (canMove(p, Move.WEST)){
-            p.move(Move.WEST);
-            if(Solve (Move.WEST, p)){
+            move(p, Move.WEST);
+            if(Solve(Move.WEST, p)){
                 return true;
             }
-            p.move(Move.EAST);
+            //p.move(Move.EAST);
         }
+
+        //if stuck
+
         return false;
     }
+
 
     public Move[] getOptions(Pawn p) {
         Move[] mov;
@@ -172,11 +177,7 @@ public class Maze implements IMaze {
     }
 
     public void move(Pawn p, Move m) {
-        if (canMove(p, m)) {
-            p.move(m);
-        } else {
-            //no move
-        }
+        p.move(m);
     }
 
     public boolean canMove(Pawn p, Move m) {

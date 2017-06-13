@@ -3,6 +3,7 @@ package Mazez;
 public class Pawn implements IPawn {
 
     private Route r;
+    private Maze m;
 
     private int currentColl, currentRow;
 
@@ -11,7 +12,8 @@ public class Pawn implements IPawn {
         r = new Route(this);
     }
 
-    public Pawn(Maze m){
+    public Pawn(Maze ma){
+        this.m = ma;
         int [] a = m.getStartP();
         setPosition(a);
         r = new Route(this);
@@ -29,11 +31,14 @@ public class Pawn implements IPawn {
         this.currentColl = positions[1];
     }
 
-    public void move (Move m){
-        int [] a = position();
-        int [] b = Maze.identifyM(m);
-        setPosition(Maze.addMatrizes(a, b));
-        r.move(m);
+    public void move (Move mov){
+        if(m.canMove(this, mov)){
+            int [] a = position();
+            int [] b = Maze.identifyM(mov);
+            setPosition(Maze.addMatrizes(a, b));
+            r.move(mov);
+        }
+        r.move(Move.NOOP);
     }
 
     public Route getRoute() {return r;}
