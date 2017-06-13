@@ -2,55 +2,69 @@ package Mazez;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GraphMaze extends JFrame{
 
     private JButton left, right, up, down;
-    Container contentPane;
+    private Container contentPane;
+    private Maze m;
+    private Pawn p;
+    private GraphPawn gp;
 
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 600;
     private final int X_TO_ORIGIN = 100;
     private final int Y_TO_ORIGIN = 100;
     static final int SQUARE_SIZE = 30;
-    static final int BORDER = 25;
+    static final int BORDER = 50;
 
-    public GraphMaze(Maze m){
+    public GraphMaze(Maze maz){
 
-        setVisible(true);
+        this.m = maz;
         setTitle("Playing maze...");
-
-        int [] a = m.getDims();
-        setSize((a[1]*SQUARE_SIZE) + 200 + BORDER, (a[0]*SQUARE_SIZE)+ 200 + BORDER);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        setVisible(true);
+        setResizable(false);
         setResizable(false);
         setLocation(X_TO_ORIGIN, Y_TO_ORIGIN);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         contentPane = getContentPane();
         contentPane.setBackground(new Color(155,155,155));
-        contentPane.setLayout(new GridLayout(m.getDims()[0]+10, m.getDims()[1]));
+        contentPane.setLayout(null);
 
-        GraphPawn gp = new GraphPawn(m.p);
+        p = new Pawn(m);
+
+        gp = new GraphPawn(p);
         gp.setVisible(true);
         contentPane.add(gp);
 
-        drawMaze(m);
-
-        revalidate();
-        repaint();
+        drawMaze();
 
         left = new JButton("left");
-        //left.setSize(50, 50);
-        left.setLocation(350, 100);
+        left.setSize(100, 25);
+        left.setLocation(25, 10);
 
         right = new JButton("right");
-        //right.setSize(50, 50);
-        right.setLocation(150, 100);
+        right.setSize(100, 25);
+        right.setLocation(25+100+25, 10);
 
         up = new JButton("up");
-        //up.setSize(50, 50);
-        up.setLocation(200, 0);
+        up.setSize(100, 25);
+        up.setLocation(25+25+25+100+100, 10);
 
         down = new JButton("down");
-        //down.setSize(50, 50);
-        down.setLocation(200, 200);
+        down.setSize(100, 25);
+        down.setLocation(25+25+100+25+25+100+100, 10);
+
+        DirectionButton db = new DirectionButton();
+
+        up.addActionListener(db);
+        down.addActionListener(db);
+        right.addActionListener(db);
+        left.addActionListener(db);
 
         contentPane.add(left);
         contentPane.add(down);
@@ -58,7 +72,7 @@ public class GraphMaze extends JFrame{
         contentPane.add(right);
     }
 
-    private void drawMaze(Maze m){
+    private void drawMaze(){
         MazeCell mc;
         MazeCell[][] ma = m.getMaze();
         int [] a = m.getDims();
@@ -68,6 +82,11 @@ public class GraphMaze extends JFrame{
                 drawType(mc, col, row);
             }
         }
+    }
+
+    private void haveWon(){
+        this.setVisible(false);
+        Menu m = new Menu();
     }
 
 
@@ -86,6 +105,8 @@ public class GraphMaze extends JFrame{
                 contentPane.add(ex);
                 break;
             case START:
+                Start s = new Start(col, row);
+                contentPane.add(s);
                 break;
         }
     }
@@ -93,7 +114,7 @@ public class GraphMaze extends JFrame{
     abstract class Drawables extends JPanel{
 
         public Drawables(int row, int col){
-            //this.setSize(GraphMaze.SQUARE_SIZE, GraphMaze.SQUARE_SIZE);
+            this.setSize(GraphMaze.SQUARE_SIZE, GraphMaze.SQUARE_SIZE);
             this.setLocation(GraphMaze.BORDER + row * GraphMaze.SQUARE_SIZE ,GraphMaze.BORDER + col * GraphMaze.SQUARE_SIZE );
         }
     }
@@ -116,6 +137,41 @@ public class GraphMaze extends JFrame{
         private Color type = EMPTY;
 
         public Empty(int row, int col){
+            super(row, col);
+            this.setBackground(type);
+        }
+    }
+
+    class DirectionButton implements ActionListener {
+
+        public void actionPerformed (ActionEvent evt){
+            JButton clickedButton = (JButton) evt.getSource();
+            if (clickedButton.equals(up)){
+                m.move(p, Move.NORTH);
+            }
+            if (clickedButton.equals(down)){
+                m.move(p, Move.SOUTH);
+            }
+            if (clickedButton.equals(left)){
+                m.move(p, Move.WEST);
+            }
+            if (clickedButton.equals(right)){
+                m.move(p, Move.EAST);
+            }
+            gp.changeLocation();
+            if(m.isSolvedBy(p)){
+                haveWon();
+            }
+        }
+
+    }
+
+    class Start extends Drawables{
+
+        private final Color START = new Color(220,150,155);
+        private Color type = START;
+
+        public Start(int row, int col){
             super(row, col);
             this.setBackground(type);
         }

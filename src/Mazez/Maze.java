@@ -2,6 +2,8 @@ package Mazez;
 
 import java.io.*;
 
+import static Mazez.Move.NOOP;
+
 
 public class Maze implements IMaze {
 
@@ -10,10 +12,11 @@ public class Maze implements IMaze {
         if (goodCols(f)) {
             if (goodtoRead(f)) {
                 read();
-                p = new Pawn(numRowS, numColS);
                 }
             }
         }
+
+    private int i = 0;
 
     private final int ERROR = -1;
     private byte[] stuff;
@@ -26,20 +29,63 @@ public class Maze implements IMaze {
     private static final int[] west = new int[]{0, -1};
     private static final int[] east = new int[]{0, 1};
 
-    Pawn p;
+    public void Solve(){
+        Pawn p = new Pawn(this);
+        Solve(Move.EAST, p);
+    }
+
+    private boolean Solve(Move m, Pawn p) {
+
+        System.out.println(p.position()[0]);
+        System.out.println(p.position()[1]);
+
+        if (isSolvedBy(p)){
+            return true;
+        }
+
+        if (canMove(p, Move.SOUTH)){
+            p.move(Move.SOUTH);
+            return true;
+        }
+
+        if (canMove(p, Move.EAST)){
+            p.move(Move.EAST);
+            return true;
+        }
+
+        if (canMove(p, Move.NORTH)){
+            p.move(Move.NORTH);
+            return true;
+        }
+
+        if (canMove(p, Move.WEST)){
+            p.move(Move.WEST);
+            return true;
+        }
+
+        return false;
+
+    }
 
     public Move[] getOptions(Pawn p) {
         Move[] mov;
         int i = 0;
+        int ii = 0;
         for (Move move : Move.values()) {
-            if (canMove(p, move))
+            if (canMove(p, move)) {
                 i++;
+            }
         }
+
         mov = new Move[i];
-        for (Move move : Move.values()) {
-            if (canMove(p, move))
-                mov[i] = move;
+
+        for (Move mo : Move.values()) {
+            if (canMove(p, mo)) {
+                mov[ii] = mo;
+                ii++;
+            }
         }
+
         return mov;
     }
 
@@ -67,13 +113,17 @@ public class Maze implements IMaze {
         return c;
     }
 
+    int[] getEndP() {
+        return new int[]{numRowE, numColE};
+    }
+
     int[] getStartP() {
         return new int[]{numRowS, numColS};
     }
 
     public boolean isSolvedBy(Pawn p) {
         int[] a = p.position();
-        return a[0] == numColE & a[1] == numRowE;
+        return a[0] == numRowE & a[1] == numColE;
     }
 
     public void move(Pawn p, Move m) {
@@ -189,8 +239,6 @@ public class Maze implements IMaze {
         int cC = 0, cR = 0;
         int a;
         for (byte b : this.stuff) {
-            System.out.println(cR);
-            System.out.println(cC);
             a = (int) b;
             switch (a) {
                 case 95:
@@ -205,16 +253,16 @@ public class Maze implements IMaze {
 
                 case 83:
                     addTo(MazeCell.START, cR, cC); // S
-                    cC++;
                     numColS = cC;
                     numRowS = cR;
+                    cC++;
                     break;
 
                 case 69:
                     addTo(MazeCell.EXIT, cR, cC); // E
-                    cC++;
                     numColE = cC;
                     numRowE = cR;
+                    cC++;
                     break;
                 case 10:
                     cR++;

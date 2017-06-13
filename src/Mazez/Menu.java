@@ -9,6 +9,8 @@ import java.io.File;
 
 public class Menu extends JFrame{
 
+    static private File f = new File("E:/PC/New/P2/src/d.maze");
+
     private JButton play;
     private Maze m;
 
@@ -20,7 +22,15 @@ public class Menu extends JFrame{
     private final int HEIGHT = 600;
 
     public static void main(String[] args){
-        Menu m = new Menu();
+        //Menu m = new Menu();
+        try{
+            Maze ma = new Maze(f);
+            Pawn pa = new Pawn(ma);
+            ma.Solve();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public Menu(){
@@ -42,7 +52,6 @@ public class Menu extends JFrame{
         contentPane.add(play);
 
         PlayButton toplay = new PlayButton();
-
         play.addActionListener(toplay);
 
     }
@@ -64,7 +73,7 @@ public class Menu extends JFrame{
                 GraphMaze playmaze = new GraphMaze(m);
             }catch (Exception e){
                 frame.setVisible(true);
-                JOptionPane.showMessageDialog(null, e.getStackTrace());
+                JOptionPane.showMessageDialog(null, e.getMessage());
             }
 
         }

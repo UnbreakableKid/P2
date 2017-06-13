@@ -1,32 +1,50 @@
 package Mazez;
 
-/**
- * Created by PC on 11/06/2017.
- */
+import java.util.ArrayList;
+
 public class Route implements IRoute {
 
-        private Move[] route;
+        private Pawn p;
+        private ArrayList<Move> route;
+        private ArrayList<int[]> numroute;
+
+        public Route(Pawn pa){
+            this.p = pa;
+            numroute = new ArrayList<>();
+            numroute.add(p.position());
+            this.route = new ArrayList<>();
+        }
 
         public int getCol() {
-            return 1;
+            int a = numroute.get(numroute.size())[1];
+            return a;
         }
 
         public int getRow() {
-            return 2;
+            int a = numroute.get(numroute.size())[0];
+            return a;
         }
 
         public int getCol(int i) {
-            return 3;
+            int a = numroute.get(i)[1];
+            return a;
         }
 
         public int getRow(int i) {
-            return 4;
+            int a = numroute.get(i)[0];
+            return a;
         }
 
         public int length() {
-            return 5;
+            return route.size();
         }
 
         public void move(Move m) {
+            route.add(m);
+            numroute.add(p.position());
+        }
+
+        boolean haveBeen(int row, int col){
+            return numroute.contains(new int[]{getCol(), getRow()});
         }
     }
