@@ -1,11 +1,17 @@
 package Mazez;
 
 import java.io.*;
-
-import static Mazez.Move.NOOP;
+import java.util.Random;
 
 
 public class Maze implements IMaze {
+
+    public Maze(int rows, int cols){
+        numRows = rows;
+        numCols = cols;
+        maze =  new MazeCell[numRows][numCols];
+        generate(maze, 0, 0, numRows, numCols, how(numRows, numCols));
+    }
 
     public Maze(File f) throws Exception {
 
@@ -17,6 +23,7 @@ public class Maze implements IMaze {
         }
 
     private int i = 0;
+    private Random r = new Random();;
 
     private final int ERROR = -1;
     private byte[] stuff;
@@ -29,12 +36,40 @@ public class Maze implements IMaze {
     private static final int[] west = new int[]{0, -1};
     private static final int[] east = new int[]{0, 1};
 
-    public void Solve(){
-        Pawn p = new Pawn(this);
-        Solve(Move.EAST, p);
+    private static final int VERTICAL = 1;
+    private static final int HORIZONTAL = 2;
+
+    private int how(int width, int heigth){
+        if (width < heigth){
+            return HORIZONTAL;
+        }
+        if (heigth > width){
+            return VERTICAL;
+        }
+        else{
+            return r.nextInt(2)+1;
+        }
     }
 
-    private boolean Solve(Move m, Pawn p) {
+    public boolean generate(MazeCell[][] mazez, int row, int col, int width, int height, int how ){
+
+        if (width < 2 || height <2) {
+            return true;
+        }
+
+        //no idea
+
+        int lrow = 1;
+        return true;
+
+    }
+
+    public void Solve(){
+        Pawn p = new Pawn(this);
+        Solve(0,0, p);
+    }
+
+    private boolean Solve(int row, int col, Pawn p) {
 
         System.out.println(p.position()[0]);
         System.out.println(p.position()[1]);
@@ -45,26 +80,36 @@ public class Maze implements IMaze {
 
         if (canMove(p, Move.SOUTH)){
             p.move(Move.SOUTH);
-            return true;
+            if(Solve (Move.SOUTH, p)){
+                return true;
+            }
+            p.move(Move.NORTH);
         }
 
         if (canMove(p, Move.EAST)){
             p.move(Move.EAST);
-            return true;
+            if(Solve (Move.EAST, p)){
+                return true;
+            }
+            p.move(Move.WEST);
         }
 
         if (canMove(p, Move.NORTH)){
             p.move(Move.NORTH);
-            return true;
+            if(Solve (Move.NORTH, p)){
+                return true;
+            }
+            p.move(Move.SOUTH);
         }
 
         if (canMove(p, Move.WEST)){
             p.move(Move.WEST);
-            return true;
+            if(Solve (Move.WEST, p)){
+                return true;
+            }
+            p.move(Move.EAST);
         }
-
         return false;
-
     }
 
     public Move[] getOptions(Pawn p) {

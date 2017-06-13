@@ -24,9 +24,9 @@ public class Menu extends JFrame{
     public static void main(String[] args){
         //Menu m = new Menu();
         try{
-            Maze ma = new Maze(f);
-            Pawn pa = new Pawn(ma);
-            ma.Solve();
+            Maze m = new Maze(f);
+            m.Solve();
+            //m.generate();
 
         }catch (Exception e){
             e.printStackTrace();
