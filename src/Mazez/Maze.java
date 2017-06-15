@@ -20,6 +20,9 @@ public class Maze implements IMaze {
     private MazeCell[][] maze;
     private int numColS, numRowS, numCols, numRows, numColE, numRowE;
 
+    private ArrayList<Point> casasAntigas;
+    private Queue<Pawn> pawns;
+
     private static final int[] north = new int[]{-1, 0};
     private static final int[] south = new int[]{1, 0};
     private static final int[] west = new int[]{0, -1};
@@ -98,7 +101,7 @@ public class Maze implements IMaze {
                 if ((i == numRowS && ii == numColS) || (i == numRowE && ii == numColE)){
                     continue;
                 }
-                MazeCell type = choose(r.nextInt(3));
+                MazeCell type = choose(r.nextInt(2));
                 maze[i][ii] = type;
             }
         }
@@ -136,11 +139,10 @@ public class Maze implements IMaze {
 
     }
 
-    private ArrayList<Point> casasAntigas = new ArrayList<Point>();
-    private Queue<Pawn> pawns;
-
 
     boolean Solve() {
+
+        casasAntigas = new ArrayList<Point>();
         pawns = new LinkedList<Pawn>();
         pawns.add(new Pawn(this));
 
