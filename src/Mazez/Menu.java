@@ -22,11 +22,11 @@ public class Menu extends JFrame{
     private final int HEIGHT = 600;
 
     public static void main(String[] args){
-        //Menu m = new Menu();
         try{
-            Maze m = new Maze(f);
-            m.Solve();
-            //m.generate();
+            Menu m = new Menu();
+           //Maze m = new Maze(5,5);
+           //m.generate();
+           //m.Solve();
 
         }catch (Exception e){
             e.printStackTrace();
@@ -69,7 +69,7 @@ public class Menu extends JFrame{
             //chooseOne();
 
             try {
-                m = new Maze(f);
+                m = new Maze(5,5);
                 GraphMaze playmaze = new GraphMaze(m);
             }catch (Exception e){
                 frame.setVisible(true);

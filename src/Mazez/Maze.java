@@ -1,26 +1,15 @@
 package Mazez;
 
+import java.awt.Point;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
-
 
 public class Maze implements IMaze {
 
-    public Maze(int rows, int cols){
-        numRows = rows;
-        numCols = cols;
-        maze =  new MazeCell[numRows][numCols];
-        generate(maze, 0, 0, numRows, numCols, how(numRows, numCols));
-    }
-
-    public Maze(File f) throws Exception {
-
-        if (goodCols(f)) {
-            if (goodtoRead(f)) {
-                read();
-                }
-            }
-        }
+    private int mode = 0;
 
     private int i = 0;
     private Random r = new Random();;
@@ -39,46 +28,180 @@ public class Maze implements IMaze {
     private static final int VERTICAL = 1;
     private static final int HORIZONTAL = 2;
 
-    private int how(int width, int heigth){
-        if (width < heigth){
-            return HORIZONTAL;
+    public Maze(int rows, int cols){
+        numRows = rows;
+        numCols = cols;
+        maze =  new MazeCell[numRows][numCols];
+        mode = 1;
+        try{
+            generate();
+        }catch (Exception e){
+            e.getMessage();
         }
-        if (heigth > width){
-            return VERTICAL;
-        }
-        else{
-            return r.nextInt(2)+1;
+        mode = 0;
+    }
+
+    public Maze(File f) throws Exception {
+
+        if (goodCols(f)) {
+            if (goodtoRead(f)) {
+                read();
+            }
         }
     }
 
-    public boolean generate(MazeCell[][] mazez, int row, int col, int width, int height, int how ){
+    void generate() {
 
-        if (width < 2 || height <2) {
-            return true;
+        setStartAndEnd();
+
+        int i = 0;
+
+        boolean canDo;
+
+        try {
+
+            do {
+                populate();
+                i++;
+
+                //if it gets stuckerino
+
+                if (i == 5) {
+                    System.out.print(1);
+                    throw new Exception("Couldn't do it");
+                }
+
+                canDo = Solve();
+
+            } while (!canDo);
+        } catch (Exception e) {
+            generate();
+        }
+    }
+
+    private MazeCell choose(int type){
+        switch (type){
+            case 0:
+                return MazeCell.EMPTY;
+            case 1:
+                return MazeCell.WALL;
+            case 2:
+                return MazeCell.EMPTY;
+        }
+        return MazeCell.EMPTY;
+    }
+
+    private void populate(){
+
+        for (int i = 0; i < numRows; i++){
+            for (int ii = 0; ii < numCols; ii++){
+                if ((i == numRowS && ii == numColS) || (i == numRowE && ii == numColE)){
+                    continue;
+                }
+                MazeCell type = choose(r.nextInt(3));
+                maze[i][ii] = type;
+            }
+        }
+    }
+
+    void printMaze() {
+        int a = 0;
+        for (int i = 0; i < numRows; i++) {
+            for (int ii = 0; ii < numCols; ii++) {
+                a++;
+                System.out.println(maze[i][ii].toString());
+            }
+        }
+        System.out.println(a);
+    }
+
+        private void setStartAndEnd(){
+
+        numRowS = r.nextInt(numRows);
+        numColS = r.nextInt(numCols);
+
+        maze[numRowS][numColS] = MazeCell.START;
+
+        do {
+            numRowE = r.nextInt(numRows);
+            numColE = r.nextInt(numCols);
         }
 
-        //no idea
+        while ((numRowS == numRowE) || (numColS == numColE));
 
-        int lrow = 1;
+        maze[numRowE][numColE] = MazeCell.EXIT;
+
+        //done[numRowS][numColS] = 1;
+        //done[numRowE][numColE] = 1;
+
+    }
+
+    private ArrayList<Point> casasAntigas = new ArrayList<Point>();
+    private Queue<Pawn> pawns;
+
+
+    boolean Solve() {
+        pawns = new LinkedList<Pawn>();
+        pawns.add(new Pawn(this));
+
+        try {
+
+            while (!isSolvedBy(pawns.peek())) {
+
+                //System.out.println(pawns.peek());
+                Point p = new Point(pawns.peek().position()[0], pawns.peek().position()[1]);
+                if (!casasAntigas.contains(p)) {
+                    //System.out.println("Adicionei nova antiga");
+                    casasAntigas.add(p);
+                }
+
+                Move[] moves = getOptions(pawns.peek());
+
+                if (moves.length == 0) {
+                    //System.out.println("Sem saida");
+                    //tira a head
+                    //
+                    pawns.poll();
+                } else {
+
+                    if (moves.length > 1) {
+                        //adiciona ramifica��es
+                        //System.out.println("Ramifica��o");
+                        for (int i = 1; i < moves.length; i++) {
+                            Pawn filho = new Pawn(this);
+                            filho.setPosition(pawns.peek().position());
+                            filho.move(moves[i]);
+                            pawns.add(filho);
+                            //System.out.println(pawns);
+                        }
+                    }
+                    //continua a rota original
+                    pawns.peek().move(moves[0]);
+
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
         return true;
-
     }
-
-    public void Solve(){
-        Pawn p = new Pawn(this);
-        Solve(Move.EAST, p);
-    }
-
-    private boolean Solve(Move m, Pawn p) {
-
-        System.out.print(p.position()[0] + " ");
-        System.out.print(p.position()[1]);
-        System.out.println();
-
-        if (isSolvedBy(p)){
-            return true;
+    
+    private boolean SolveRoute() {
+    	
+    	
+    	
+       /*
+        for(Move move : moves){
+        	routes.add(new Route(p));
         }
-
+        
+        routes.get(0).move(m);
+        */
+        
+      
+        
+        
+        /*
         if (canMove(p, Move.SOUTH)){
             move(p, Move.SOUTH);
             if(Solve(Move.SOUTH, p)){
@@ -110,33 +233,21 @@ public class Maze implements IMaze {
             }
             //p.move(Move.EAST);
         }
-
+         */
         //if stuck
 
         return false;
     }
 
-
     public Move[] getOptions(Pawn p) {
-        Move[] mov;
-        int i = 0;
-        int ii = 0;
-        for (Move move : Move.values()) {
-            if (canMove(p, move)) {
-                i++;
+        ArrayList<Move> move = new ArrayList<Move>();
+        for (Move m : Move.values()) {
+            if (canMove(p, m)) {
+            	//System.out.println("Can Move "+m);
+                move.add(m);
             }
-        }
-
-        mov = new Move[i];
-
-        for (Move mo : Move.values()) {
-            if (canMove(p, mo)) {
-                mov[ii] = mo;
-                ii++;
-            }
-        }
-
-        return mov;
+        } 
+        return move.toArray(new Move[move.size()]);
     }
 
     static int[] identifyM(Move m) {
@@ -183,8 +294,13 @@ public class Maze implements IMaze {
     public boolean canMove(Pawn p, Move m) {
         int[] pos = p.position();
         int[] posToBe = addMatrizes(identifyM(m), pos);
+        if (mode == 1){
+            if(casasAntigas.contains(new Point(posToBe[0], posToBe[1]))){
+                return false;
+            }
+        }
         try {
-            return (canIgo(maze[posToBe[0]][posToBe[1]]));
+        	return (canIgo(maze[posToBe[0]][posToBe[1]]));
         } catch (ArrayIndexOutOfBoundsException e) {
             return false;
         }
