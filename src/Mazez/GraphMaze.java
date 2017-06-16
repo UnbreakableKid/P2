@@ -162,6 +162,7 @@ public class GraphMaze extends JFrame{
             if(m.isSolvedBy(p)){
                 haveWon();
             }
+            getRoute().length();
         }
 
     }
